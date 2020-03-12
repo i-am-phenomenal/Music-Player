@@ -18,11 +18,11 @@ from django.urls import path, include
 from rest_framework import routers
 from todo import views
 
-router = routers.DefaultRouter()
-router.register(r'todos', views.TodoView, 'todo')
+# router = routers.DefaultRouter()
+# router.register(r'todos', views.TodoView, 'todo')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/todos/', views.TodoView.as_view()),
-    path('api/', include(router.urls)),
+    path('api/todos/', views.todo_view),
+    path('api/todos/create/', views.create_todo),
 ]

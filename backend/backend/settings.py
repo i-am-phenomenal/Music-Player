@@ -125,3 +125,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+CSRF_COOKIE_SECURE = True

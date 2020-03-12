@@ -12,7 +12,8 @@ import React, { Component } from "react";
             description: "",
             completed: false
           },
-          todoList: []
+          todoList: [],
+          displayFlash: false,
         };
       }
       componentDidMount() {
@@ -21,8 +22,7 @@ import React, { Component } from "react";
       refreshList = () => {
         axios
           .get("http://localhost:8000/api/todos/")
-          // .then(resp => console.log(resp, " Data =-> "))
-          .then(res => this.setState({ todoList: res.data }))
+          .then(res => this.setState({ todoList: res.data, displayFlash: false }))
           .catch(err => console.log(err));
       };
       displayCompleted = status => {
@@ -31,6 +31,22 @@ import React, { Component } from "react";
         }
         return this.setState({ viewCompleted: false });
       };
+      renderFlashFooter = () => {
+        const style = {color: 'white'};
+        if (this.state.displayFlash) {
+          return(
+            <footer className="page-footer font-small blue">
+              <p style={style}>Item Created Successfully !!</p> 
+            </footer>
+          )
+        } else {
+          return(
+            <footer className="page-footer font-small blue">
+              <p> </p>
+          </footer>
+          )
+        }
+      }
       renderTabList = () => {
         return (
           <div className="my-5 tab-list">
@@ -92,12 +108,13 @@ import React, { Component } from "react";
         this.toggle();
         if (item.id) {
           axios
-            .put(`http://localhost:8000/api/todos/${item.id}/`, item)
+            .put(`http://localhost:8000/api/todos/update/${item.id}/`, item)
             .then(res => this.refreshList());
           return;
         }
-        axios
-          .post("http://localhost:8000/api/todos/", item)
+        axios 
+          .post("http://localhost:8000/api/todos/create/", item) 
+          .then(resp => this.setState({displayFlash: resp.data}))
           .then(res => this.refreshList());
       };
       handleDelete = item => {
@@ -129,6 +146,7 @@ import React, { Component } from "react";
                     {this.renderItems()}
                   </ul>
                 </div>
+                {this.renderFlashFooter()}
               </div>
             </div>
             {this.state.modal ? (
