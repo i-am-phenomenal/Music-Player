@@ -17,6 +17,7 @@ class Document(models.Model):
     music_name = models.CharField(max_length=50)
     extension = models.CharField(max_length=10, default='mp3', editable=False)
     is_being_played = models.BooleanField(default=False)
+    music_size =  models.IntegerField(default=0)
 
     def __str__(self): 
         return self.music_name 

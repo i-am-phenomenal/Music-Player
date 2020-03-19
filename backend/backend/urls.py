@@ -27,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/todos/', views.todo_view),
     path('api/todos/create/', views.create_todo),
+    path('api/upload_file/', views.process_and_upload),
 ]
 
 if settings.DEBUG: 
