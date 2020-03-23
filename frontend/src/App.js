@@ -6,6 +6,7 @@ import {
   Link
 } from "react-router-dom";
 import UploadView from "./components/Upload";
+import PlayListView from "./components/Playlist";
 
 export default function App() {
   return(<Router>
@@ -14,12 +15,18 @@ export default function App() {
           <li> 
             <Link to="/upload"> Upload </Link>
             </li> 
+            <li>
+                <Link to="/playlist"> Playlist </Link> 
+              </li> 
         </ul> 
      </div> 
      <Switch> 
       <Route path="/upload">
       <UploadView /> 
       </Route> 
+      <Route path="/playlist"> 
+        <PlayListView /> 
+      </Route>
   </Switch>
 </Router>
 

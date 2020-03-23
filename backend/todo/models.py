@@ -13,7 +13,7 @@ class Todo(models.Model):
 
 class Document(models.Model): 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    music_file = models.FileField()
+    music_file = models.FileField(upload_to='music/')
     music_name = models.CharField(max_length=50)
     extension = models.CharField(max_length=10, default='mp3', editable=False)
     is_being_played = models.BooleanField(default=False)

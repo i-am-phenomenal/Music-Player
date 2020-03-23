@@ -43,20 +43,6 @@ export default class UploadView extends Component {
         form_data.append('title', fileObject.name);
         form_data.append('type',fileObject.type);
         form_data.append('file_size', fileObject.size);
-        // var newObject = {
-        //     'fileName' : fileObject.name,
-        //     'lastModified' : fileObject.lastModified,
-        //     'type' : fileObject.type,
-        //     'size' : fileObject.size, 
-        //     'webkitRelativePath' : fileObject.webkitRelativePath
-        // };
-
-        // const fileAsBlob = new Blob([fileObject]);
-        // var stream = fileAsBlob.stream();
-
-        // var converted = JSON.stringify(newObject);
-        // console.log(stream, " --> CONVERTED ");
-
         let custom_url = "http://localhost:8000/api/upload_file/"
 
         axios.post(custom_url, form_data, {
@@ -65,7 +51,7 @@ export default class UploadView extends Component {
             }
         })
         .then(res => {
-            console.log(res.data, " RESPONSE AFTER POST REQUEST FOR FILE")
+            alert(res.data)
         })
         .catch(error => console.log(error , "!!!!!!!! ERROR !!!!!!!!"))
 
@@ -82,6 +68,9 @@ export default class UploadView extends Component {
                 <br /> 
                 <Button variant="outline-dark" type="submit">Upload </Button>
             </form>
+            <br /> 
+            <br /> 
+          
             </div>
         )
     }
