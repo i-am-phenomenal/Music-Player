@@ -17,7 +17,6 @@ function buildFileSelector(){
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'multiple');
-    console.log(fileSelector, "  FILE SELECTOR ")
     return fileSelector;
 }
 
@@ -38,8 +37,10 @@ export default class UploadView extends Component {
     handleSubmit(event) {
         event.preventDefault();
         const fileObject = this.fileInput.current.files[0];
+        console.log(fileObject, "DUMMY FLE OBJECT S");
         let form_data = new FormData();
         form_data.append('file', fileObject);
+        console.log(fileObject, "212222222222222")
         form_data.append('title', fileObject.name);
         form_data.append('type',fileObject.type);
         form_data.append('file_size', fileObject.size);

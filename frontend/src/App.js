@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import UploadView from "./components/Upload";
 import PlayListView from "./components/Playlist";
+import SignUpView from "./components/SignUp";
 
 export default function App() {
   return(<Router>
@@ -18,6 +19,9 @@ export default function App() {
             <li>
                 <Link to="/playlist"> Playlist </Link> 
               </li> 
+              <li>
+                <Link to="/sign_up"> Sign Up </Link> 
+              </li> 
         </ul> 
      </div> 
      <Switch> 
@@ -26,6 +30,9 @@ export default function App() {
       </Route> 
       <Route path="/playlist"> 
         <PlayListView /> 
+      </Route>
+      <Route path="/sign_up"> 
+        <SignUpView /> 
       </Route>
   </Switch>
 </Router>

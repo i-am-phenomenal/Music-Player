@@ -28,7 +28,7 @@ export default class PlayListView extends Component {
     handleDelete = (item, event) => {
         event.preventDefault();
         let custom_url = "http://localhost:8000/api/delete/"
-        console.log(item, "ITEM TO BE SENT TO BACKEND")
+
         axios 
         .post(custom_url, item)
         .then(response => 
@@ -43,8 +43,17 @@ export default class PlayListView extends Component {
         let custom_url = "http://localhost:8000/api/play/"
         axios
         .post(custom_url, item)
-        .then(response => console.log(response, "RESPNSE FROM MACHINE!!!"))
         .catch(error => alert(error));
+    }
+
+    requestInfo = (item, event) => {
+        event.preventDefault();
+        let custom_url = "http://localhost:8000/api/get_info/"
+        console.log(item, "$$$$$$$$$$$$$$");
+        axios
+        .post(custom_url, item)
+        .then(response => alert(response))
+        .catch(error =>  console.log(error))
     }
 
     requestForAllFiles = () => {
@@ -57,7 +66,6 @@ export default class PlayListView extends Component {
 
     renderPlaylist = () => {
         const allItems = this.state.allFiles
-        console.log(allItems, "11111111111111111111")
         return allItems.map(item => (
             <li className="list-group-item d-flex justify-content-between align-items-center">
                     <span className="list-group-item" title={item}>                        
@@ -67,6 +75,8 @@ export default class PlayListView extends Component {
                         <Button variant="outline-dark" onClick={(e) => this.handlePlay(item, e)}>Play</Button>
                         &nbsp;
                         <Button color="danger" onClick={(e) => this.handleDelete(item, e)}>Delete</Button>
+                        &nbsp;
+                        <Button color="info" onClick={(e) => this.requestInfo(item, e)}>Info</Button>
                          </div>
                         </span> 
                 </li>

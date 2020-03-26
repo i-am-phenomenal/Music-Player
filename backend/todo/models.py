@@ -3,6 +3,14 @@ import os
 import uuid 
 # Create your models here.
 
+class User(models.Model):
+     username = models.CharField(max_length=200)
+     password = models.CharField(max_length=200)
+     is_registered = models.BooleanField(default=False)
+     is_logged_in = models.BooleanField(default=False)
+    #  profile_image = models.ImageField  To be added in the future
+    #  prefererred_genres = models. To be added in future
+
 class Todo(models.Model): 
     title = models.CharField(max_length=120)
     description = models.TextField()

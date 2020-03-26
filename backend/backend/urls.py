@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/all_files/', views.all_files),
     path('api/play/', views.play_song),
     path('api/delete/', views.delete_specific),
+    path('api/get_info/', views.get_info_for_specific),
 ]
 
 if settings.DEBUG: 

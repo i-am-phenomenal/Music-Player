@@ -15,9 +15,22 @@ export default class CustomModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeItem: this.props.activeItem
+      currentUser: this.props.currentUser,
     };
   }
+///  NEED TO MAKE A GENERALIZED FUNCTION OUT OF THIS 
+  handleUsernameChange = (event) => {
+    // console.log(e.target.value, "EVENT TARGET VALUE ");
+    let {name, value} = event.target;
+    console.log(name, "NAME");
+    console.log(value, "VALUE");
+    let userObject = this.state.currentUser;
+    userObject.username = value
+    this.setState({currentUser: userObject})
+    // const currentUser = {... this.state.currentUser, [name]: value};
+    // this.setState({ currentUser });  
+  };
+
   handleChange = e => {
     let { name, value } = e.target;
     if (e.target.type === "checkbox") {
@@ -29,8 +42,8 @@ export default class CustomModal extends Component {
   render() {
     const { toggle, onSave } = this.props;
     return (
-      <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}> Todo Item </ModalHeader>
+      <Modal isOpen={true} toggle={true}>
+        <ModalHeader toggle={true}> Sign Up </ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
@@ -38,9 +51,9 @@ export default class CustomModal extends Component {
               <Input
                 type="text"
                 name="title"
-                value={this.state.activeItem.title}
-                onChange={this.handleChange}
-                placeholder="Enter Todo Title"
+                value= {this.state.currentUser.username}
+                onChange={this.handleUsernameChange}
+                placeholder="Enter Username"
               />
             </FormGroup>
             <FormGroup>
@@ -48,8 +61,8 @@ export default class CustomModal extends Component {
               <Input
                 type="text"
                 name="description"
-                value={this.state.activeItem.description}
-                onChange={this.handleChange}
+                value= "Dummy Value 1"//{this.state.activeItem.description}
+                // onChange={this.handleChange}
                 placeholder="Enter Todo description"
               />
             </FormGroup>
@@ -58,8 +71,8 @@ export default class CustomModal extends Component {
                 <Input
                   type="checkbox"
                   name="completed"
-                  checked={this.state.activeItem.completed}
-                  onChange={this.handleChange}
+                  checked= "Dummy Value 1" //{this.state.activeItem.completed}
+                  // onChange={this.handleChange}
                 />
                 Completed
               </Label>

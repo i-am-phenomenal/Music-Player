@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import TodoSerializer
@@ -17,11 +18,15 @@ from os import listdir
 from django.conf import settings 
 from os.path import isfile, join
 import os
+# import ctypes 
+os.add_dll_directory(r'C:/Program Files/VideoLAN/VLC')
 from django.http import JsonResponse
 import simpleaudio as sa
 import tempfile
 import scipy.io.wavfile
 import pydub
+# from pygame import mixer
+import vlc
 
 # --------------- UTILITIES START ---------------
 
@@ -55,10 +60,8 @@ def convert_to_array(filename, as_float=False):
     print(filename, "333333333333333")
     path, extension = os.path.splitext(filename)
     proper_filename = settings.MEDIA_ROOT + filename
-    print(proper_filename, "44444444444444")
     # assert extension == '.mp3'
     mp3 = pydub.AudioSegment.from_file(proper_filename)
-    print(mp3, "2222222222222222")
     _, path = tempfile.mkstemp()
     mp3.export(path, format='wav')
     rate, data = scipy.io.wavfile.read(path)
@@ -72,6 +75,18 @@ def convert_to_array(filename, as_float=False):
 
     return rate, data
 
+def return_updated_name(file_name):
+    if '.' in file_name: 
+        return file_name
+    else:
+        return return_name_with_mp3_extension(file_name)
+
+def convert_and_return_dict(file_object):
+    return {
+        'music_name': file_object.music_name,
+        'extension': file_object.extension,
+        'music_size': file_object.music_size
+    }      
 
 # --------------- UTILITIES END ---------------
 
@@ -81,14 +96,41 @@ def convert_to_array(filename, as_float=False):
 @csrf_exempt
 def play_song(request):
     current_filename = request.body.decode("utf-8")
+    proper_path = settings.MEDIA_ROOT  + current_filename
+    fetched = Document.objects.get(music_name=current_filename)
+    print(fetched.music_name)
+    print(type(fetched.music_file))
+    print(fetched.music_file)
+    print(fetched.uuid)
+    # p = vlc.MediaPlayer(proper_path)
+    # p.play()
+    # print(proper_path, "222222222222222222")
     # fetched_file = Document.objects.get(music_name=current)
-    rate, data = convert_to_array(current_filename)
+    # rate, data = convert_to_array(current_filename)
+    print(rate, "RRRRRRRRRRRRRRRR")
+    print(data, "DDDDDDDDDDDDDDDDDD")
+    # mixer.init()
+    # mixer.music.load(proper_path)
+    # mixer.music.play()
     return HttpResponse(status=200)
+
+@csrf_exempt
+def get_info_for_specific(request):
+    file_name = request.body.decode('utf-8')
+    try: 
+        fetched = Document.objects.get(music_name=file_name) 
+        print(fetched.music_file, "2222222222222222")
+        return JsonResponse(convert_and_return_dict(fetched), safe=False)
+
+    except Exception as e:
+        log_exception()
+        return HttpResponse("Error while fetching data", status=500)
+
 
 @csrf_exempt
 def delete_specific(request):
     to_be_deleted = request.body.decode('utf-8')
-    updated_name = return_name_with_mp3_extension(to_be_deleted)
+    updated_name = return_updated_name(to_be_deleted)
     if (delete_file_from_directory(updated_name)):
         try: 
             fetched = Document.objects.filter(music_name=updated_name)
@@ -105,20 +147,27 @@ def delete_specific(request):
 def process_and_upload(request):
     data = request.body
     file_from_frontend = request.FILES
+    temporary_file = file_from_frontend['file'].file
+    # print(file_from_frontend['file'].file, "777777777777777")
+    # print(type(file_from_frontend['file']), "888888888888888")
+    # content_file = request.FILES['music_file']
     document = Document()
     for key, value in  file_from_frontend.items(): 
-        print(value, "33333333333333333333")
-        # print(splitted, "1111111111111111111")
+        # document = Document(music_file=temporary_file, music_name=value.name, extension=str(value).split('.')[1], is_being_played=False, uuid=uuid.uuid4, music_size=value.size)
+        # print(value, "1111111111111111111")
+        # print(file_from_frontend, "@@@@@@@@@@@@@")
         file_contents = value.read()
         document.music_name = value.name 
+        document.music_file =  value.read()
         document.extension = str(value).split('.')[1]
         document.is_being_played  = False
         document.uuid = uuid.uuid4()
         document.music_size = value.size
-
+        # print(document.music_file, "-000000000000000")
+    print(document.music_name, "111111111!!!")
     if document.extension not in ALLOWED_FILE_TYPES: 
         return  HttpResponse(status=500)
-
+    print(document.music_file, "11111111111111")
     try:
         only_files = return_all_files_in_dir() 
         file_fullname = document.music_name
