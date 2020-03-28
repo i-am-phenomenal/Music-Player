@@ -233,6 +233,30 @@ def all_files(request):
         log_exception()
         return HttpResponse(status=500)
 
+@csrf_exempt
+def update_user_profile(request):
+    #WIP
+    return HttpResponse(status=200)
+
+
+@csrf_exempt
+def fetch_user(request): 
+    user_uuid = request.body.decode('utf-8')
+    try: 
+        fetched = User.objects.get(uuid=user_uuid)
+        converted_dict = {
+            'uuid': user_uuid,
+            'username': fetched.username,
+            'password': fetched.password,
+            'isAdmin': fetched.is_admin
+            }
+
+        return JsonResponse(converted_dict, safe=False)
+
+    except Exception as e: 
+        log_exception()
+        return HttpResponse("There was some error while trying to fetch data !!!", status=500)
+
 
 @csrf_exempt
 def create_todo(request):
@@ -252,3 +276,115 @@ def todo_view(request):
     serializer_class = TodoSerializer
     records  = Todo.objects.all().values()
     return JsonResponse(list(records), safe=False)
+
+@csrf_exempt
+def load_seed_data(request):     
+    jimmy = {
+    'uuid': uuid.uuid4(),
+    'username': "Jimmy",
+    'password': "jimmy",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    harry = {
+    'uuid': uuid.uuid4(),
+    'username': "Harry",
+    'password': "harry",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    john = {
+    'uuid': uuid.uuid4(),
+    'username': "johnwick",
+    'password': "johnwick",
+    'is_admin': True,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    ethan = {
+    'uuid': uuid.uuid4(),
+    'username': "Ethan",
+    'password': "password",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    rajesh = {
+    'uuid': uuid.uuid4(),
+    'username': "Rajesh",
+    'password': "password",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    shubham = {
+    'uuid': uuid.uuid4(),
+    'username': "Shubham",
+    'password': "password",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    vikrant = {
+    'uuid': uuid.uuid4(),
+    'username': "Vicky69",
+    'password': "password",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    mandeep = {
+    'uuid': uuid.uuid4(),
+    'username': "man-deep",
+    'password': "password",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    sam = {
+    'uuid': uuid.uuid4(),
+    'username': "Sammy Mammy Zayn",
+    'password': "password",
+    'is_admin': False,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    kuuk_aanaa = {
+    'uuid': uuid.uuid4(),
+    'username': "angle_69",
+    'password': "password",
+    'is_admin': True,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+
+    cock_sesnar = {
+    'uuid': uuid.uuid4(),
+    'username': "cocksesnar",
+    'password': "password",
+    'is_admin': True,
+    'is_registered': True,
+    'is_logged_in': False
+    }
+    try: 
+        for user in [jimmy, harry, john, ethan, rajesh, shubham, vikrant, mandeep, sam, kuuk_aanaa, cock_sesnar]: 
+            user_object = User(uuid=user['uuid'], username=user['username'], password=user['password'], is_admin=user['is_admin'], is_registered=user['is_registered'], is_logged_in=user['is_logged_in'])
+            user_object.save()
+        return HttpResponse("Seed Data created successfully !!", status=200)
+
+    except Exception as e: 
+        logging.error(traceback.format_exc())
+        return HttpResponse("There was some problem while loading the seed data" ,status=500)
+
+
