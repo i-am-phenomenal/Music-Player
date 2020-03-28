@@ -18,9 +18,7 @@ from os import listdir
 from django.conf import settings 
 from os.path import isfile, join
 import os
-# import ctypes 
 os.add_dll_directory(r'C:/Program Files/VideoLAN/VLC')
-from django.http import JsonResponse
 import simpleaudio as sa
 import tempfile
 import scipy.io.wavfile
@@ -57,7 +55,6 @@ def delete_file_from_directory(file_name):
         return False
 
 def convert_to_array(filename, as_float=False):
-    print(filename, "333333333333333")
     path, extension = os.path.splitext(filename)
     proper_filename = settings.MEDIA_ROOT + filename
     # assert extension == '.mp3'
@@ -98,17 +95,11 @@ def play_song(request):
     current_filename = request.body.decode("utf-8")
     proper_path = settings.MEDIA_ROOT  + current_filename
     fetched = Document.objects.get(music_name=current_filename)
-    print(fetched.music_name)
-    print(type(fetched.music_file))
-    print(fetched.music_file)
-    print(fetched.uuid)
     # p = vlc.MediaPlayer(proper_path)
     # p.play()
     # print(proper_path, "222222222222222222")
     # fetched_file = Document.objects.get(music_name=current)
     # rate, data = convert_to_array(current_filename)
-    print(rate, "RRRRRRRRRRRRRRRR")
-    print(data, "DDDDDDDDDDDDDDDDDD")
     # mixer.init()
     # mixer.music.load(proper_path)
     # mixer.music.play()
@@ -119,7 +110,6 @@ def get_info_for_specific(request):
     file_name = request.body.decode('utf-8')
     try: 
         fetched = Document.objects.get(music_name=file_name) 
-        print(fetched.music_file, "2222222222222222")
         return JsonResponse(convert_and_return_dict(fetched), safe=False)
 
     except Exception as e:
@@ -144,6 +134,28 @@ def delete_specific(request):
         return HttpResponse("Not able to delete file from directory!!", status=500)
 
 @csrf_exempt
+def fetch_all_users(request): 
+    if request.method == "GET": 
+        try: 
+            all_records = User.objects.all()
+            converted = []
+            for record in all_records: 
+                dict_object = {
+                    'uuid': record.uuid,
+                    'username':record.username,
+                    'password': record.password,
+                    'isAdmin': record.is_admin,
+                    'isLoggedIn': record.is_logged_in
+                 }
+                converted.append(dict_object)
+
+            return JsonResponse(converted, safe=False)
+        
+        except Exception as e: 
+            log_exception()
+            return HttpResponse("Something went wrong !!", status=500)
+
+@csrf_exempt
 def admin_login(request): 
     from_frontend = json.loads(request.body)
     try: 
@@ -151,7 +163,7 @@ def admin_login(request):
         if fetched is None: 
             return HttpResponse("No user exists for the given credentials. Try again with correct credentials.", status=200)
         elif (fetched.is_admin): 
-            json_response = {'uuid' : fetched.uuid, is_admin: True}
+            json_response = {'uuid' : fetched.uuid, 'is_admin': fetched.is_admin}
             return JsonResponse(json_response, safe=False)       
         else: 
             return HttpResponse("The user is not an Admin !!", status=500)
@@ -163,8 +175,8 @@ def admin_login(request):
 @csrf_exempt
 def register_user(request):
     converted = json.loads(request.body)
-    try:
-        user_object = User(username=converted['username'], password=converted['password'], is_registered=True, is_logged_in=False, is_admin=converted['isAdmin'])
+    try:        
+        user_object = User(username=converted['username'], password=converted['password'], is_registered=True, is_logged_in=False, is_admin=converted['isAdmin'], uuid=uuid.uuid4())
         user_object.save()
         return HttpResponse("User Registered Successfully !!", status=200)
     except Exception as e: 
@@ -194,10 +206,8 @@ def process_and_upload(request):
         document.uuid = uuid.uuid4()
         document.music_size = value.size
         # print(document.music_file, "-000000000000000")
-    print(document.music_name, "111111111!!!")
     if document.extension not in ALLOWED_FILE_TYPES: 
         return  HttpResponse(status=500)
-    print(document.music_file, "11111111111111")
     try:
         only_files = return_all_files_in_dir() 
         file_fullname = document.music_name
