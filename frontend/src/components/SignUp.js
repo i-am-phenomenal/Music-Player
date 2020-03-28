@@ -23,7 +23,8 @@ export default class SignUpView extends Component {
                 username: "",
                 password: "",
                 isRegistered: false,
-                isLoggedin: false
+                isLoggedin: false,
+                isAdmin: false,
             },
             showRegisterModal: false,
             showLoginModal: false,
@@ -56,20 +57,60 @@ export default class SignUpView extends Component {
         }
     }
 
+    toggle = () => {
+        this.setState({showRegisterModal: !this.state.showRegisterModal})
+        this.refreshUserObject();
+    }
+
+    refreshUserObject = () => {
+        let refreshed = {
+            username: "",
+            password: "",
+            isRegistered: false,
+            isLoggedin: false,
+            isAdmin: false,
+        }
+
+        this.setState({userObject: refreshed})
+    }
+
+    isUserValidated = userObject => {
+        if (userObject.username === "" || userObject.password === "") {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    registerUser = userObject => {
+        if (this.isUserValidated(userObject)) {
+            this.toggle();
+            let custom_url = 'http://localhost:8000/api/signup/'
+            axios 
+            .post(custom_url, userObject)
+            .then(response => alert(response.data))
+            .then(_ => this.refreshUserObject)
+            .catch(error => alert(error))
+        }
+        else {
+            alert("You may have missed out on some details. Please have a look !");
+        }
+        
+    };
+
     renderModal = ()  => {
         let showModal = this.state.showRegisterModal;
         if (showModal) {
             return (
             <CustomModal 
-            toggle = {true} 
+            toggle = {this.toggle} 
             currentUser = {this.state.userObject}
+            onSave = {this.registerUser}
                 
                 />)
         } else {
             return ("")
         }
-        
-            // toggle= {this.toggle}
     }
 
     render() {

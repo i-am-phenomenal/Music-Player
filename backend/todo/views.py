@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import TodoSerializer
-from .models import Todo, Document
+from .models import Todo, Document, User
 from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 import json
@@ -142,6 +142,19 @@ def delete_specific(request):
             return HttpResponse("Not able to delete from database !!", status=500)
     else: 
         return HttpResponse("Not able to delete file from directory!!", status=500)
+
+@csrf_exempt
+def register_user(request):
+    converted = json.loads(request.body)
+    try:
+        user_object = User(username=converted['username'], password=converted['password'], is_registered=True, is_logged_in=False, is_admin=converted['isAdmin'])
+        user_object.save()
+        return HttpResponse("User Registered Successfully !!", status=200)
+    except Exception as e: 
+        log_exception()
+        return HttpResponse("Not able to register user !!!", status=500)
+    
+    return HttpResponse(status=200)
 
 @csrf_exempt
 def process_and_upload(request):

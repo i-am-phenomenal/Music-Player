@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/play/', views.play_song),
     path('api/delete/', views.delete_specific),
     path('api/get_info/', views.get_info_for_specific),
+    path('api/signup/', views.register_user),
 ]
 
 if settings.DEBUG: 

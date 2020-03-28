@@ -18,69 +18,73 @@ export default class CustomModal extends Component {
       currentUser: this.props.currentUser,
     };
   }
-///  NEED TO MAKE A GENERALIZED FUNCTION OUT OF THIS 
-  handleUsernameChange = (event) => {
-    // console.log(e.target.value, "EVENT TARGET VALUE ");
-    let {name, value} = event.target;
-    console.log(name, "NAME");
-    console.log(value, "VALUE");
-    let userObject = this.state.currentUser;
-    userObject.username = value
-    this.setState({currentUser: userObject})
-    // const currentUser = {... this.state.currentUser, [name]: value};
-    // this.setState({ currentUser });  
-  };
 
-  handleChange = e => {
-    let { name, value } = e.target;
-    if (e.target.type === "checkbox") {
-      value = e.target.checked;
+  handleChange = (flag ,event) => {
+    event.preventDefault();
+    let currentUserObject = this.state.currentUser;
+    let currentValue = event.target.value;
+    if(flag == "username") {
+      currentUserObject.username = currentValue;
+      this.setState({userObject: currentUserObject})
+    } else if (flag == "password") {
+      currentUserObject.password = currentValue;
+      this.setState({userObject: currentUserObject})
+    } else if (flag == "checkbox") {
+      currentUserObject.isAdmin =  event.target.checked;
+      this.setState({currentUser: currentUserObject});
     }
-    const activeItem = { ...this.state.activeItem, [name]: value };
-    this.setState({ activeItem });
-  };
+  }
+
+  // handleChange = e => {
+  //   let { name, value } = e.target;
+  //   if (e.target.type === "checkbox") {
+  //     value = e.target.checked;
+  //   }
+  //   const activeItem = { ...this.state.activeItem, [name]: value };
+  //   this.setState({ activeItem });
+  // };
   render() {
     const { toggle, onSave } = this.props;
     return (
-      <Modal isOpen={true} toggle={true}>
-        <ModalHeader toggle={true}> Sign Up </ModalHeader>
+      <Modal isOpen={true} toggle={toggle}>
+        <ModalHeader toggle={toggle}> Sign Up </ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>
-              <Label for="title">Title</Label>
+              <Label for="title">Username</Label>
               <Input
                 type="text"
                 name="title"
                 value= {this.state.currentUser.username}
-                onChange={this.handleUsernameChange}
+                onChange={(e) => this.handleChange("username", e)}
                 placeholder="Enter Username"
               />
             </FormGroup>
             <FormGroup>
-              <Label for="description">Description</Label>
+              <Label for="description">Password</Label>
               <Input
                 type="text"
                 name="description"
-                value= "Dummy Value 1"//{this.state.activeItem.description}
-                // onChange={this.handleChange}
-                placeholder="Enter Todo description"
+                value= {this.state.currentUser.password}
+                onChange={(e) => this.handleChange("password", e)}
+                placeholder="Enter Password"
               />
             </FormGroup>
             <FormGroup check>
-              <Label for="completed">
+              <Label for="isAdmin">
                 <Input
                   type="checkbox"
-                  name="completed"
-                  checked= "Dummy Value 1" //{this.state.activeItem.completed}
-                  // onChange={this.handleChange}
+                  name="isAdmin"
+                  checked= {this.state.currentUser.isAdmin}
+                  onChange={(e) => this.handleChange("checkbox", e)}
                 />
-                Completed
+                Mark as Admin
               </Label>
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="success" onClick={() => onSave(this.state.activeItem)}>
+          <Button color="success" onClick={() => onSave(this.state.currentUser)}>
             Save
           </Button>
         </ModalFooter>
