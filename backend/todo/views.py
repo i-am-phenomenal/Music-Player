@@ -144,6 +144,23 @@ def delete_specific(request):
         return HttpResponse("Not able to delete file from directory!!", status=500)
 
 @csrf_exempt
+def admin_login(request): 
+    from_frontend = json.loads(request.body)
+    try: 
+        fetched = User.objects.get(username=from_frontend['username'], password=from_frontend['password'])
+        if fetched is None: 
+            return HttpResponse("No user exists for the given credentials. Try again with correct credentials.", status=200)
+        elif (fetched.is_admin): 
+            json_response = {'uuid' : fetched.uuid, is_admin: True}
+            return JsonResponse(json_response, safe=False)       
+        else: 
+            return HttpResponse("The user is not an Admin !!", status=500)
+
+    except Exception as e: 
+        log_exception()
+        return HttpResponse("Something went wrong, Please try again !", status=500)
+
+@csrf_exempt
 def register_user(request):
     converted = json.loads(request.body)
     try:

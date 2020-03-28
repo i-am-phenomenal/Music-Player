@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/delete/', views.delete_specific),
     path('api/get_info/', views.get_info_for_specific),
     path('api/signup/', views.register_user),
+    path('api/admin/', views.admin_login),
 ]
 
 if settings.DEBUG: 

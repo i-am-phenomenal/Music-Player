@@ -8,6 +8,8 @@ import {
 import UploadView from "./components/Upload";
 import PlayListView from "./components/Playlist";
 import SignUpView from "./components/SignUp";
+import SignInView from "./components/SignIn";
+import PanelView from './components/Panel';
 
 export default function App() {
   return(<Router>
@@ -22,6 +24,9 @@ export default function App() {
               <li>
                 <Link to="/sign_up"> Sign Up </Link> 
               </li> 
+              <li>
+                <Link to="/sign_in"> Sign In</Link> 
+              </li> 
         </ul> 
      </div> 
      <Switch> 
@@ -33,6 +38,12 @@ export default function App() {
       </Route>
       <Route path="/sign_up"> 
         <SignUpView /> 
+      </Route>
+      <Route path='/panel'> 
+        <PanelView /> 
+      </Route>
+      <Route path="/sign_in"> 
+        <SignInView /> 
       </Route>
   </Switch>
 </Router>

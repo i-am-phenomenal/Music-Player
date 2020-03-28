@@ -9,6 +9,7 @@ class User(models.Model):
      is_registered = models.BooleanField(default=False)
      is_logged_in = models.BooleanField(default=False)
      is_admin = models.BooleanField(default=False)
+     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #  profile_image = models.ImageField  To be added in the future
     #  prefererred_genres = models. To be added in future
 
