@@ -19,6 +19,7 @@ import ReactDOM from 'react-dom';
 import axios from "axios";
 import InfoModal from './InfoModal';
 import CustomModal from "./Modal";
+import { Redirect } from "react-router-dom";
 
 export default class PanelView extends Component { 
     constructor(props) {
@@ -33,12 +34,14 @@ export default class PanelView extends Component {
             allUsers: [],
             isDropDownOpen: false,
             toggleInfoModal: false,
-            toggleEditProfileModal: false
+            toggleEditProfileModal: false,
+            staticUrl: "http://localhost:8000/api",
+            isLoggedOut: false
         }
     };
 
     getAllUsersData = () => {
-        let customUrl = "http://localhost:8000/api/get_all_users/";
+        let customUrl = this.state.staticUrl + "/get_all_users/";
         axios 
         .get(customUrl)
         .then(response => this.setState({allUsers: response.data}))
@@ -47,7 +50,7 @@ export default class PanelView extends Component {
 
     fetchCurrentUserData = () => {
         let currentUuid = window.sessionStorage.getItem("user")
-        let customUrl = "http://localhost:8000/api/fetch_user/";
+        let customUrl = this.state.staticUrl + "/fetch_user/";
         axios
         .post(customUrl, currentUuid)
         .then(response => this.setState({user: response.data}))
@@ -56,8 +59,11 @@ export default class PanelView extends Component {
 
     componentDidMount() {
         let isAdmin = window.sessionStorage.getItem("isAdmin")
-        
-        this.fetchCurrentUserData()
+        let currentUuid = window.sessionStorage.user
+        if (currentUuid) {
+            this.fetchCurrentUserData()
+        }
+
         if (isAdmin) {
             this.getAllUsersData()  
         } 
@@ -108,11 +114,18 @@ export default class PanelView extends Component {
         this.setState({toggleInfoModal:  !this.state.toggleInfoModal})
     }
 
+    updateState = (responseObj, updatedUserObject) => {
+        if (responseObj.status == 200) {
+            this.setState({user: updatedUserObject, toggleEditProfileModal: !this.state.toggleEditProfileModal})
+            alert("Operation Successfull !!");
+        }
+    }
+
     updateUserDetails = updatedUserObject => {
-        let customUrl = "http://localhost:8000/api/update_profile/";
+        let customUrl = this.state.staticUrl + "/update_profile/";
         axios
         .put(customUrl, updatedUserObject)
-        .then(response => alert(response.data))
+        .then(response => this.updateState(response, updatedUserObject))
         .catch(error => alert(error))
     }
 
@@ -122,7 +135,6 @@ export default class PanelView extends Component {
 
     renderEditProfileModal = () => {
         let toggleEditModal = this.state.toggleEditProfileModal;
-        console.log(toggleEditModal, "1111111111111")
         if (toggleEditModal) {
             return (
             <CustomModal 
@@ -148,6 +160,29 @@ export default class PanelView extends Component {
         }        
     }
 
+    tryRedirect = () => {
+        let shouldRedirect =  this.state.isLoggedOut;
+        if (shouldRedirect) {
+            return (<Redirect to="sign_in" /> )
+        }
+    }
+
+    toggleRedirect = () => {
+        this.setState({isLoggedOut: !this.state.isLoggedOut})
+    }
+
+    signOutUser = () => {
+        let userUuid = window.sessionStorage.getItem("user")
+        let customUrl = this.state.staticUrl + "/change_login_status/"
+        window.sessionStorage.removeItem("user");
+        window.sessionStorage.removeItem("isAdmin");
+        axios
+        .post(customUrl, userUuid)
+        .then(response => alert(response.data))
+        .then(_ => this.toggleRedirect())
+        .catch(error => alert(error))
+    }
+
     renderDropdown = () => {
        return (
            <div className="float-lg-right"> 
@@ -156,13 +191,11 @@ export default class PanelView extends Component {
           {this.state.user.username}
           </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem header>About User</DropdownItem>
           <DropdownItem onClick={this.toggle}>Profile</DropdownItem>
-          <DropdownItem disabled>Profile Settings</DropdownItem>
           <DropdownItem divider />
           <DropdownItem onClick={this.toggleEditProfileModal}>Edit Profile</DropdownItem>
-          <DropdownItem>Bar Action</DropdownItem>
-          <DropdownItem>Sign Out</DropdownItem>
+          <DropdownItem> Settings </DropdownItem>
+          <DropdownItem onClick={this.signOutUser}>Sign Out</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       </div>
@@ -176,6 +209,7 @@ export default class PanelView extends Component {
                 {this.renderAdminView()}
                 {this.renderInfoModal()}
                 {this.renderEditProfileModal()}
+                {this.tryRedirect()}
                 </div>
         )
     }

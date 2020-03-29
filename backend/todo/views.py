@@ -156,6 +156,18 @@ def fetch_all_users(request):
             return HttpResponse("Something went wrong !!", status=500)
 
 @csrf_exempt
+def change_user_login_status(request): 
+    user_uuid = request.body.decode('utf-8')
+    try:
+        fetched = User.objects.get(uuid=user_uuid)
+        fetched.is_logged_in = False
+        fetched.save()
+        return HttpResponse("LogOut Successful !!", status=200)
+    except Exception as e: 
+        log_exception()
+        return HttpResponse("Unable to logout completely!!", status=500)
+
+@csrf_exempt
 def admin_login(request): 
     from_frontend = json.loads(request.body)
     try: 
@@ -235,8 +247,18 @@ def all_files(request):
 
 @csrf_exempt
 def update_user_profile(request):
-    #WIP
-    return HttpResponse(status=200)
+    from_frontend = json.loads(request.body)
+    try: 
+        fetched = User.objects.get(uuid=from_frontend['uuid'])
+        fetched.username = from_frontend['username']
+        fetched.password = from_frontend['password']
+        fetched.is_admin = from_frontend['isAdmin']
+        fetched.save()
+        return HttpResponse("Update Operation Successful !!!", status=200)
+
+    except Exception as e:
+        log_exception()
+        return HttpResponse(status=500) 
 
 
 @csrf_exempt
