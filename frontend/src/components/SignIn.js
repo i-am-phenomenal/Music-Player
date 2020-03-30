@@ -62,9 +62,9 @@ export default class SignInView extends Component {
 
     setRedirect = (respData) => {
         if (respData.is_admin === true) {
-            this.setState({redirect: true});
             window.sessionStorage.setItem("user", respData.uuid);
             window.sessionStorage.setItem("isAdmin", respData.is_admin);
+            this.setState({redirect: true}); 
         }
     }
 

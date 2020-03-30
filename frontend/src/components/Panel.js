@@ -20,6 +20,9 @@ import axios from "axios";
 import InfoModal from './InfoModal';
 import CustomModal from "./Modal";
 import { Redirect } from "react-router-dom";
+import { MDBCol, MDBIcon, MDBFormInline } from "mdbreact";
+import './styles.css';
+
 
 export default class PanelView extends Component { 
     constructor(props) {
@@ -36,7 +39,10 @@ export default class PanelView extends Component {
             toggleInfoModal: false,
             toggleEditProfileModal: false,
             staticUrl: "http://localhost:8000/api",
-            isLoggedOut: false
+            isLoggedOut: false,
+            searchText: "",
+            previousSearchText: "",
+            searchResults: [],
         }
     };
 
@@ -59,7 +65,7 @@ export default class PanelView extends Component {
 
     componentDidMount() {
         let isAdmin = window.sessionStorage.getItem("isAdmin")
-        let currentUuid = window.sessionStorage.user
+        let currentUuid = window.sessionStorage.getItem("user")
         if (currentUuid) {
             this.fetchCurrentUserData()
         }
@@ -202,9 +208,61 @@ export default class PanelView extends Component {
       )
     }
 
+    triggerOptions = (event) => {
+        event.preventDefault()
+        this.setState({searchText: event.target.value})
+    }
+
+    handleSearch = (event) => {
+        event.preventDefault()
+        let customUrl = this.state.staticUrl + '/search/'
+        let searchText = this.state.searchText
+        axios
+            .post(customUrl, searchText)
+            // .then(response => console.log(response.data.results), "1111111111111")
+            .then(response => this.setState({searchResults: response.data.results}))
+            .catch(error =>  alert(error))
+    }
+
+    renderSearchBar = () => {
+        return (
+            <MDBCol md="6">
+            <form className="form-inline mt-4 mb-4" onSubmit={(e) => this.handleSearch(e)}>
+              <MDBIcon icon="search" />
+              <input onChange={(e) => this.triggerOptions(e)} className="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search" />
+              </form>
+              {this.renderOptions}
+          </MDBCol>
+        )
+    }
+
+    renderOptions = () => {
+        let names = this.state.searchResults;
+        console.log(names, "122222222222")
+        if (names != [] ) {
+            return (
+                <div className="container">
+                    <section className="section">
+                        <ul>
+                        {names.map(item => (
+                            <li className="animals" key={item}>{item}</li>
+                        ))}
+                        </ul>
+                        </section>
+                    </div>
+                    )
+        }
+        else {
+            return ("")
+        }
+
+    }
+
     render() {
         return (
             <div> 
+                {this.renderSearchBar()}
+                {this.renderOptions()}
                 {this.renderDropdown()}
                 {this.renderAdminView()}
                 {this.renderInfoModal()}

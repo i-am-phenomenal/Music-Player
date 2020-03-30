@@ -1,7 +1,7 @@
 
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import TodoSerializer
+from django.core import serializers
 from .models import Todo, Document, User
 from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
@@ -166,6 +166,19 @@ def change_user_login_status(request):
     except Exception as e: 
         log_exception()
         return HttpResponse("Unable to logout completely!!", status=500)
+
+@csrf_exempt 
+def search(request): 
+    from_frontend =  request.body.decode('utf-8')
+    results = []
+    try: 
+        records = User.objects.filter(username__contains = from_frontend).values()
+        for record in records: 
+            results.append(record['username'])
+        return JsonResponse({'results': list(results)})
+    except Exception as e: 
+        log_exception()
+        return HttpResponse("There was an error while fetching the results", status=500)
 
 @csrf_exempt
 def admin_login(request): 

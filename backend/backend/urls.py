@@ -38,7 +38,8 @@ urlpatterns = [
     path('api/load_seed_data/', views.load_seed_data),
     path('api/fetch_user/', views.fetch_user),
     path('api/update_profile/', views.update_user_profile),
-    path('api/change_login_status/', views.change_user_login_status)
+    path('api/change_login_status/', views.change_user_login_status),
+    path('api/search/', views.search),
 ]
 
 if settings.DEBUG: 
