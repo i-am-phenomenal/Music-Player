@@ -189,6 +189,11 @@ export default class PanelView extends Component {
         .catch(error => alert(error))
     }
 
+    handleClick = (event) => {
+        event.preventDefault();
+        console.log(event, "I am here");
+    }
+
     renderDropdown = () => {
        return (
            <div className="float-lg-right"> 
