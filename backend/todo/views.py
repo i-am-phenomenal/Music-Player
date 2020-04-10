@@ -18,13 +18,10 @@ from os import listdir
 from django.conf import settings 
 from os.path import isfile, join
 import os
-os.add_dll_directory(r'C:/Program Files/VideoLAN/VLC')
 import simpleaudio as sa
 import tempfile
 import scipy.io.wavfile
 import pydub
-# from pygame import mixer
-import vlc
 
 # --------------- UTILITIES START ---------------
 
@@ -215,14 +212,8 @@ def process_and_upload(request):
     data = request.body
     file_from_frontend = request.FILES
     temporary_file = file_from_frontend['file'].file
-    # print(file_from_frontend['file'].file, "777777777777777")
-    # print(type(file_from_frontend['file']), "888888888888888")
-    # content_file = request.FILES['music_file']
     document = Document()
     for key, value in  file_from_frontend.items(): 
-        # document = Document(music_file=temporary_file, music_name=value.name, extension=str(value).split('.')[1], is_being_played=False, uuid=uuid.uuid4, music_size=value.size)
-        # print(value, "1111111111111111111")
-        # print(file_from_frontend, "@@@@@@@@@@@@@")
         file_contents = value.read()
         document.music_name = value.name 
         document.music_file =  value.read()

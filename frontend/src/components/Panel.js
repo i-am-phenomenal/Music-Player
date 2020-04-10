@@ -6,6 +6,8 @@ import {
     ModalBody,
     ModalFooter,
     Form,
+    ListGroup,
+    ListGroupItem,
     Dropdown,
     DropdownToggle,
     DropdownMenu,
@@ -188,27 +190,22 @@ export default class PanelView extends Component {
         .then(_ => this.toggleRedirect())
         .catch(error => alert(error))
     }
-
-    handleClick = (event) => {
-        event.preventDefault();
-        console.log(event, "I am here");
-    }
-
+    
     renderDropdown = () => {
        return (
            <div className="float-lg-right"> 
-        <Dropdown isOpen={this.state.isDropDownOpen} toggle={this.toggleDropdown}>
-        <DropdownToggle caret>
-          {this.state.user.username}
-          </DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem onClick={this.toggle}>Profile</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem onClick={this.toggleEditProfileModal}>Edit Profile</DropdownItem>
-          <DropdownItem> Settings </DropdownItem>
-          <DropdownItem onClick={this.signOutUser}>Sign Out</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+                <Dropdown isOpen={this.state.isDropDownOpen} toggle={this.toggleDropdown}>
+                <DropdownToggle caret>
+                {this.state.user.username}
+                </DropdownToggle>
+                <DropdownMenu>
+                <DropdownItem onClick={this.toggle}>Profile</DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem onClick={this.toggleEditProfileModal}>Edit Profile</DropdownItem>
+                <DropdownItem> Settings </DropdownItem>
+                <DropdownItem onClick={this.signOutUser}>Sign Out</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
       </div>
       )
     }
@@ -224,7 +221,6 @@ export default class PanelView extends Component {
         let searchText = this.state.searchText
         axios
             .post(customUrl, searchText)
-            // .then(response => console.log(response.data.results), "1111111111111")
             .then(response => this.setState({searchResults: response.data.results}))
             .catch(error =>  alert(error))
     }
@@ -236,29 +232,28 @@ export default class PanelView extends Component {
               <MDBIcon icon="search" />
               <input onChange={(e) => this.triggerOptions(e)} className="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search" />
               </form>
-              {this.renderOptions}
+              
           </MDBCol>
         )
     }
 
     renderOptions = () => {
         let names = this.state.searchResults;
-        console.log(names, "122222222222")
         if (names != [] ) {
             return (
-                <div className="container">
-                    <section className="section">
-                        <ul>
+                    <ListGroup> 
                         {names.map(item => (
-                            <li className="animals" key={item}>{item}</li>
+                               <ListGroupItem tag="button" action>{item}</ListGroupItem>
                         ))}
-                        </ul>
-                        </section>
-                    </div>
+                        </ListGroup>
                     )
         }
         else {
-            return ("")
+            return (
+                <ListGroup>
+                    <ListGroupItem> Sorry, No search results for the entered value </ListGroupItem>
+                </ListGroup> 
+            )
         }
 
     }
