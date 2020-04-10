@@ -34,6 +34,12 @@ urlpatterns = [
     path('api/get_info/', views.get_info_for_specific),
     path('api/signup/', views.register_user),
     path('api/admin/', views.admin_login),
+    path('api/get_all_users/', views.fetch_all_users),
+    path('api/load_seed_data/', views.load_seed_data),
+    path('api/fetch_user/', views.fetch_user),
+    path('api/update_profile/', views.update_user_profile),
+    path('api/change_login_status/', views.change_user_login_status),
+    path('api/search/', views.search),
 ]
 
 if settings.DEBUG: 

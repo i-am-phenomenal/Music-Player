@@ -60,18 +60,11 @@ export default class SignInView extends Component {
         }
     }
 
-    // performAction = (responseObject) => {
-    //     console.log(this.state.redirect, "INSIDE PERFORM ACTION ")
-    //     if (this.state.redirect) {
-    //         this.props.history.push('/upload')
-    //     //    return <Redirect to="/upload" />
-    //     }
-    // }
-
     setRedirect = (respData) => {
-        console.log(respData, "RESPONSE DATA ");
-        if (respData == "True") {
-            this.setState({redirect: true});
+        if (respData.is_admin === true) {
+            window.sessionStorage.setItem("user", respData.uuid);
+            window.sessionStorage.setItem("isAdmin", respData.is_admin);
+            this.setState({redirect: true}); 
         }
     }
 
