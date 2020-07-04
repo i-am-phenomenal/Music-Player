@@ -19,12 +19,16 @@ from rest_framework import routers
 from todo import views
 from django.conf import settings
 from django.conf.urls.static import static 
+from graphene_django.views import GraphQLView
+from .schema import schema
 
 # router = routers.DefaultRouter()
 # router.register(r'todos', views.TodoView, 'todo')
 
 urlpatterns = [
+    path('graphql/', GraphQLView.as_view(schema=schema, graphiql=True)),
     path('admin/', admin.site.urls),
+    path('api/all_events/', views.get_all_events),
     path('api/todos/', views.todo_view),
     path('api/todos/create/', views.create_todo),
     path('api/upload_file/', views.process_and_upload),

@@ -231,8 +231,7 @@ export default class PanelView extends Component {
             <form className="form-inline mt-4 mb-4" onSubmit={(e) => this.handleSearch(e)}>
               <MDBIcon icon="search" />
               <input onChange={(e) => this.triggerOptions(e)} className="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search" />
-              </form>
-              
+              </form>     
           </MDBCol>
         )
     }

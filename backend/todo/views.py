@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from django.core import serializers
-from .models import Todo, Document, User
+from .models import Todo, Document, User, Event
 from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 import json
@@ -413,4 +413,9 @@ def load_seed_data(request):
         logging.error(traceback.format_exc())
         return HttpResponse("There was some problem while loading the seed data" ,status=500)
 
-
+def get_all_events(request): 
+    records  = Event.objects.all()
+    names = []
+    for record in records:     
+        names.append(record.name)
+    return JsonResponse(names, safe=False)
