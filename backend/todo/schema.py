@@ -23,9 +23,28 @@ class Query(graphene.ObjectType):
 
 
 class EventInput(graphene.InputObjectType):
-    id=  graphene.ID()
-    name =  graphene.String()  
-    url = graphene.String()
+    class Arguments: 
+        id=  graphene.ID()
+        name =  graphene.String()  
+        url = graphene.String()
+
+        event = graphene.Field(EventType)
+
+        def mutate(self, info, **kwargs):
+            id = kwargs.get('id')
+            name = kwargs.get('name')
+            url = kwargs.get('url')
+
+            event = Event.objects.get(pk=id)
+            event.name = name 
+            event.url = url 
+            event.save()
+            
+            # Event.objects.create(id=id, name=name, url=url)
+
+            return EventInput(event = event)
 
 
-#WIP 
+class Mutation(graphene.ObjectType):
+    # update_event = EventInput
+    pass
